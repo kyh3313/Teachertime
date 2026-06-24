@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f6f8fb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="교사 시간표">
+  <title>경북하이텍고 시간표</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section class="lock-screen" id="lockScreen">
+    <form class="lock-card" id="unlockForm">
+      <img src="icons/icon-192.png" alt="" width="74" height="74">
+      <p class="eyebrow">경북하이텍고등학교</p>
+      <h1>시간표 잠금 해제</h1>
+      <p>시간표 데이터는 암호화되어 있습니다.</p>
+      <label>
+        <span class="sr-only">비밀번호</span>
+        <input id="passwordInput" type="password" placeholder="비밀번호" autocomplete="current-password" required>
+      </label>
+      <button type="submit">열기</button>
+      <p class="lock-error" id="lockError" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">경북하이텍고등학교</p>
+      <h1>교사 시간표</h1>
+    </div>
+    <div class="clock" id="clock"></div>
+  </header>
+
+  <main id="app">
+    <section class="page active" id="searchPage">
+      <div class="section-heading">
+        <h2>시간표 확인</h2>
+        <p>교사명 또는 학반을 입력하세요.</p>
+      </div>
+
+      <div class="search-row">
+        <label class="search-box">
+          <span class="sr-only">교사명 또는 학반</span>
+          <input id="searchInput" type="search" inputmode="search" placeholder="이름 또는 학반" autocomplete="off">
+        </label>
+        <label class="mode-box">
+          <span class="sr-only">검색 종류</span>
+          <select id="searchMode">
+            <option>전체</option>
+            <option>교사</option>
+            <option>학반</option>
+          </select>
+        </label>
+      </div>
+      <p class="match" id="matchText">검색 대기</p>
+
+      <article class="status-card" id="statusCard">
+        <div class="status-main neutral" id="statusMain">대기</div>
+        <p id="statusDetail">검색어를 입력하세요.</p>
+      </article>
+
+      <div class="today-heading">
+        <h3 id="todayTitle">오늘 시간표</h3>
+        <button class="primary compact" id="weekButton" type="button">주간 보기</button>
+      </div>
+      <div class="period-strip" id="todayPeriods"></div>
+      <p class="footnote">현재 시간은 한국 표준시(Asia/Seoul)를 기준으로 표시됩니다.</p>
+    </section>
+
+    <section class="page" id="overviewPage">
+      <div class="section-heading">
+        <h2>현재 전체 현황</h2>
+        <p id="overviewSummary"></p>
+      </div>
+      <div class="teacher-list" id="overviewList"></div>
+    </section>
+
+    <section class="page" id="managePage">
+      <div class="section-heading">
+        <h2>시간표 관리</h2>
+        <p>새 전체교사시간표 HWPX를 불러오면 이 기기에 저장하여 다음 실행부터 사용합니다.</p>
+      </div>
+      <label class="button primary file-button">
+        HWPX 불러오기
+        <input id="hwpxInput" type="file" accept=".hwpx,application/zip">
+      </label>
+      <button class="button secondary" id="resetButton" type="button">처음 시간표로 되돌리기</button>
+      <button class="button lock-button" id="lockButton" type="button">지금 잠그기</button>
+      <article class="manage-card" id="manageStatus"></article>
+
+      <article class="install-help">
+        <h3>iPhone에 앱처럼 설치하기</h3>
+        <ol>
+          <li>Safari에서 이 페이지를 엽니다.</li>
+          <li>하단의 공유 버튼을 누릅니다.</li>
+          <li><strong>홈 화면에 추가</strong>를 선택합니다.</li>
+        </ol>
+      </article>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="주 메뉴">
+    <button class="active" data-page="searchPage" type="button"><span>⌕</span>조회</button>
+    <button data-page="overviewPage" type="button"><span>●</span>전체 현황</button>
+    <button data-page="managePage" type="button"><span>⚙</span>관리</button>
+  </nav>
+
+  <dialog id="weekDialog">
+    <div class="dialog-head">
+      <h2 id="weekTitle">주간 시간표</h2>
+      <button id="closeWeek" type="button" aria-label="닫기">×</button>
+    </div>
+    <div class="week-scroll">
+      <table id="weekTable"></table>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="vendor/jszip.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
